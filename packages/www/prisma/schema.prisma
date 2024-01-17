@@ -25,3 +25,12 @@ model Post {
   author    User    @relation(fields: [authorId], references: [id])
   authorId  Int
 }
+
+model Tree {
+  id       Int     @id @default(autoincrement())
+  title    String
+  content  String?
+  parent   Tree?   @relation("children", fields: [parentId], references: [id])
+  parentId Int?
+  children Tree[]  @relation("children")
+}

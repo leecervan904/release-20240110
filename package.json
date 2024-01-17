@@ -13,5 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "mockjs": "^1.1.0"
   }
 }
