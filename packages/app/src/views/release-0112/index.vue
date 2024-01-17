@@ -79,7 +79,7 @@ import BaseModal from "@/components/BaseModal";
 import SearchForm from "./components/SearchForm";
 import LeftTree from "./components/LeftTree";
 import ButtonGroup from "./components/ButtonGroup";
-import CommonTable from "./components/CommonTable";
+import CommonTable from "@/components/CommonTable";
 import VersionDiff from "./components/VersionDiff";
 import DefaultLayout from "./layouts";
 

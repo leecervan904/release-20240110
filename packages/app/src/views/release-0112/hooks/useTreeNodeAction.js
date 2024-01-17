@@ -26,7 +26,7 @@ export function useAddTreeNode({ emit, currentNode, getTreeList }) {
     },
   ];
 
-  const { refForm, visible, loading, confirm, cancel } = useModalForm({
+  const { refModal, visible, loading, confirm, cancel } = useModalForm({
     emit,
     reloadData: true,
     getTreeList,
@@ -43,7 +43,7 @@ export function useAddTreeNode({ emit, currentNode, getTreeList }) {
 
   return {
     addFormConfig: formConfig,
-    refAddForm: refForm,
+    refAddModal: refModal,
     addVisible: visible,
     addLoading: loading,
     addConfirm: handleConfirm,
@@ -103,7 +103,7 @@ export function useRenameTreeNode({ emit, getTreeList, tempNode }) {
     },
   ];
 
-  const { refForm, visible, loading, confirm, cancel } = useModalForm({
+  const { refModal, visible, loading, confirm, cancel } = useModalForm({
     emit,
     reloadData: true,
     getTreeList,
@@ -122,13 +122,13 @@ export function useRenameTreeNode({ emit, getTreeList, tempNode }) {
   watch(visible, (val) => {
     if (val) {
       console.log(tempNode.value.data);
-      refForm.value.$refs.refSimpleForm.form.name = tempNode.value.data.title;
+      refModal.value.$refs.refSimpleForm.form.name = tempNode.value.data.title;
     }
   });
 
   return {
     renameFormConfig: formConfig,
-    refRenameForm: refForm,
+    refRenameModal: refModal,
     renameVisible: visible,
     renameLoading: loading,
     renameConfirm: handleConfirm,
@@ -152,7 +152,7 @@ export function useCopyTreeNode({ emit, getTreeList, tempNode }) {
     },
   ];
 
-  const { refForm, visible, loading, confirm, cancel } = useModalForm({
+  const { refModal, visible, loading, confirm, cancel } = useModalForm({
     emit,
     reloadData: true,
     getTreeList,
@@ -169,7 +169,7 @@ export function useCopyTreeNode({ emit, getTreeList, tempNode }) {
 
   return {
     copyFormConfig: formConfig,
-    refCopyForm: refForm,
+    refCopyModal: refModal,
     copyVisible: visible,
     copyLoading: loading,
     copyConfirm: handleConfirm,
@@ -193,7 +193,7 @@ export function useMoveTreeNode({ emit, getTreeList, tempNode }) {
     },
   ];
 
-  const { refForm, visible, loading, confirm, cancel } = useModalForm({
+  const { refModal, visible, loading, confirm, cancel } = useModalForm({
     emit,
     reloadData: true,
     getTreeList,
@@ -210,7 +210,7 @@ export function useMoveTreeNode({ emit, getTreeList, tempNode }) {
 
   return {
     moveFormConfig: formConfig,
-    refMoveForm: refForm,
+    refMoveModal: refModal,
     moveVisible: visible,
     moveLoading: loading,
     moveConfirm: handleConfirm,

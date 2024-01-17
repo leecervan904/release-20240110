@@ -1,14 +1,15 @@
-import { ref } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import { Message } from "view-design";
 
 export function useModalForm({ emit, getTreeList, reloadData }) {
-  const refForm = ref(null);
+  const refModal = ref(null); // 弹窗组件 ref => BaseModalForm
+  const refForm = ref(null); // 表单组件 ref => SimpleForm
   const visible = ref(false);
   const loading = ref(false);
 
   const confirm = async (callback) => {
     // 1. 校验
-    const { valid, form } = refForm.value.$refs.refSimpleForm.validate();
+    const { valid, form } = refForm.value.validate();
     console.log("校验结果：", valid, { ...form });
     // return;
 
@@ -24,7 +25,7 @@ export function useModalForm({ emit, getTreeList, reloadData }) {
 
           // like cancel
           visible.value = false;
-          refForm.value.$refs.refSimpleForm.reset();
+          refForm.value.reset();
 
           emit("search"); // 自定义事件
           if (reloadData) {
@@ -39,18 +40,22 @@ export function useModalForm({ emit, getTreeList, reloadData }) {
     }
   };
 
+  onMounted(() => {
+    nextTick(() => {
+      refForm.value = refModal.value.$refs.refSimpleForm;
+    });
+  });
+
   const cancel = () => {
     visible.value = false;
-    // form.value.resetFields();
-    refForm.value.$refs.refSimpleForm.reset();
+    refForm.value.reset();
   };
 
   return {
     visible,
     loading,
-    // form,
-    // rules,
     refForm,
+    refModal,
     confirm,
     cancel,
   };

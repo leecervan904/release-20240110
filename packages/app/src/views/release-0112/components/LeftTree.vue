@@ -52,48 +52,40 @@
       </SearchTree>
     </DirectoryTree>
 
-    <BaseModalForm
+    <ModalForm
       v-model="addVisible"
       title="新建目录"
-      ref="refAddForm"
+      ref="refAddModal"
       :form-config="addFormConfig"
       :loading="addLoading"
       @confirm="addConfirm"
       @cancel="addCancel"
     />
 
-    <!-- <BaseModalForm
-      v-model="deleteVisible"
-      title="删除目录"
-      :loading="deleteLoading"
-      @confirm="deleteConfirm"
-      @cancel="deleteCancel"
-    /> -->
-
-    <BaseModalForm
+    <ModalForm
       v-model="renameVisible"
       title="重命名目录"
-      ref="refRenameForm"
+      ref="refRenameModal"
       :form-config="renameFormConfig"
       :loading="renameLoading"
       @confirm="renameConfirm"
       @cancel="renameCancel"
     />
 
-    <BaseModalForm
+    <ModalForm
       v-model="copyVisible"
       title="复制目录"
-      ref="refCopyForm"
+      ref="refCopyModal"
       :form-config="copyFormConfig"
       :loading="copyLoading"
       @confirm="copyConfirm"
       @cancel="copyCancel"
     />
 
-    <BaseModalForm
+    <ModalForm
       v-model="moveVisible"
       title="移动目录"
-      ref="refMoveForm"
+      ref="refMoveModal"
       :form-config="moveFormConfig"
       :loading="moveLoading"
       @confirm="moveConfirm"
@@ -112,14 +104,14 @@ import {
   useMoveTreeNode,
 } from "../hooks/useTreeNodeAction";
 
-import BaseModalForm from "./BaseModalForm";
+import ModalForm from "./ModalForm";
 import DirectoryTree from "./DirectoryTree";
 import SearchTree from "./SearchTree";
 
 export default {
   name: "LeftTree",
   components: {
-    BaseModalForm,
+    ModalForm,
     SearchTree,
     DirectoryTree,
   },
@@ -164,7 +156,6 @@ export default {
           renameTreeNode.renameVisible.value = true;
           break;
         case "delete":
-          // deleteTreeNode.deleteVisible.value = true;
           showDeleteModal();
           break;
         case "copy":
@@ -185,7 +176,6 @@ export default {
       getSubText,
       handleSelect,
       ...addTreeNode,
-      // ...deleteTreeNode,
       ...renameTreeNode,
       ...copyTreeNode,
       ...moveTreeNode,
