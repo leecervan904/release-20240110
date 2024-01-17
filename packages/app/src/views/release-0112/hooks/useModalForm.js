@@ -21,8 +21,12 @@ export function useModalForm({ emit, getTreeList, reloadData }) {
 
         if (res.data.code === 200) {
           Message.success("新增成功！");
+
+          // like cancel
           visible.value = false;
-          emit("search-table"); // 自定义事件
+          refForm.value.$refs.refSimpleForm.reset();
+
+          emit("search"); // 自定义事件
           if (reloadData) {
             getTreeList();
           }
