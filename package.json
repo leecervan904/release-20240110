@@ -1,0 +1,16 @@
+{
+  "name": "release-20240110",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:app": "pnpm --filter @release/app serve",
+    "dev:www": "pnpm --filter @release/www dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lodash-es": "^4.17.21"
+  }
+}
