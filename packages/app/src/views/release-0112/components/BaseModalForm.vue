@@ -1,17 +1,9 @@
 <template>
   <BaseModal v-model="open" v-bind="{ ...modalAttrs }" :title="title">
-    <Form ref="refForm" :model="form" :rules="rules" :label-width="120">
-      <FormItem label="目录名称" prop="name">
-        <Input
-          v-model="form.name"
-          placeholder="请输入目录名称"
-          :label-width="150"
-        />
-      </FormItem>
-    </Form>
+    <SimpleForm ref="refSimpleForm" :form-config="formConfig" />
 
     <div slot="footer" style="text-align: center">
-      <Button @click="$emit('cancel')">取消</Button>
+      <Button @click="$emit('cancel')">取消22</Button>
       <Button
         type="primary"
         style="margin-left: 20px"
@@ -25,18 +17,21 @@
 </template>
 
 <script>
-import { toRef, computed } from "vue";
+import { computed } from "vue";
 import BaseModal from "@/components/BaseModal";
+import SimpleForm from "@/components/simple-form";
 
 export default {
   components: {
     BaseModal,
+    SimpleForm,
   },
   props: {
-    refForm: Object,
-    visible: Boolean,
-    form: Object,
-    rules: Object,
+    formConfig: {
+      type: Array,
+      default: () => [],
+    },
+    value: Boolean,
     loading: Boolean,
     title: String,
     modalAttrs: {
@@ -62,7 +57,7 @@ export default {
     const title = computed(() => props.title || props.modalAttrs.title);
 
     return {
-      refForm: toRef(props, "refForm"),
+      // refForm: toRef(props, "refForm"),
       open,
       title,
     };

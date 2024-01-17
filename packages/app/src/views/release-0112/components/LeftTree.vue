@@ -6,6 +6,7 @@
         :data="treeData"
         :subText="getSubText"
         :mainText="getMainText"
+        label-field="title"
         @node-click="handleNodeClick"
       >
         <template #icon>
@@ -19,8 +20,8 @@
             @on-click="(name) => handleSelect(node, data, name)"
           >
             <img
-              src="@/assets/common-icon/add-tree.png"
-              class="width-10 height-10"
+              src="@/assets/common-icon/add-tree.jpg"
+              style="width: 10px; height: 10px"
               @click.stop=""
             />
             <template #list>
@@ -34,9 +35,8 @@
             @on-click="(name) => handleSelect(node, data, name)"
           >
             <img
-              src="@/assets/common-icon/more-tree.png"
-              class="width-10 margin-left-10"
-              style="height: 3px; margin-bottom: 3px"
+              src="@/assets/common-icon/more-tree.jpg"
+              style="width: 10px; height: 3px; margin: 0 5px 3px 10px"
               @click.stop=""
             />
             <template #list>
@@ -55,29 +55,27 @@
     <BaseModalForm
       v-model="addVisible"
       title="新建目录"
-      :refForm="refAddForm"
+      ref="refAddForm"
+      :form-config="addFormConfig"
       :loading="addLoading"
-      :form="addForm"
-      :rules="addRules"
       @confirm="addConfirm"
       @cancel="addCancel"
     />
 
-    <BaseModalForm
+    <!-- <BaseModalForm
       v-model="deleteVisible"
       title="删除目录"
       :loading="deleteLoading"
       @confirm="deleteConfirm"
       @cancel="deleteCancel"
-    />
+    /> -->
 
     <BaseModalForm
       v-model="renameVisible"
       title="重命名目录"
-      :refForm="refRenameForm"
+      ref="refRenameForm"
+      :form-config="renameFormConfig"
       :loading="renameLoading"
-      :form="renameForm"
-      :rules="renameRules"
       @confirm="renameConfirm"
       @cancel="renameCancel"
     />
@@ -85,10 +83,9 @@
     <BaseModalForm
       v-model="copyVisible"
       title="复制目录"
-      :refForm="refCopyForm"
+      ref="refCopyForm"
+      :form-config="copyFormConfig"
       :loading="copyLoading"
-      :form="copyForm"
-      :rules="copyRules"
       @confirm="copyConfirm"
       @cancel="copyCancel"
     />
@@ -96,10 +93,9 @@
     <BaseModalForm
       v-model="moveVisible"
       title="移动目录"
-      :refForm="refMoveForm"
+      ref="refMoveForm"
+      :form-config="moveFormConfig"
       :loading="moveLoading"
-      :form="moveForm"
-      :rules="moveRules"
       @confirm="moveConfirm"
       @cancel="moveCancel"
     />
@@ -117,8 +113,8 @@ import {
 } from "../hooks/useTreeNodeAction";
 
 import BaseModalForm from "./BaseModalForm";
-import SearchTree from "@/views/data-govern/standard-system/components/SearchTree";
-import DirectoryTree from "@/views/data-govern/standard-system/components/DirectoryTree";
+import DirectoryTree from "./DirectoryTree";
+import SearchTree from "./SearchTree";
 
 export default {
   name: "LeftTree",
@@ -146,12 +142,14 @@ export default {
     };
 
     const addTreeNode = useAddTreeNode(ctx);
-    const deleteTreeNode = useDeleteTreeNode(ctx);
+    const { showDeleteModal } = useDeleteTreeNode(ctx);
     const renameTreeNode = useRenameTreeNode(ctx);
     const copyTreeNode = useCopyTreeNode(ctx);
     const moveTreeNode = useMoveTreeNode(ctx);
 
-    const handleSelect = (node, action) => {
+    const handleSelect = (node, data, action) => {
+      console.log(node, data, action);
+
       if (action === "create") {
         currentNode.value = node;
       } else {
@@ -163,16 +161,17 @@ export default {
           addTreeNode.addVisible.value = true;
           break;
         case "rename":
-          renameTreeNode.renameVisible = true;
+          renameTreeNode.renameVisible.value = true;
           break;
         case "delete":
-          deleteTreeNode.deleteVisible = true;
+          // deleteTreeNode.deleteVisible.value = true;
+          showDeleteModal();
           break;
         case "copy":
-          copyTreeNode.copyVisible = true;
+          copyTreeNode.copyVisible.value = true;
           break;
         case "move":
-          moveTreeNode.moveVisible = true;
+          moveTreeNode.moveVisible.value = true;
           break;
         default:
           break;
@@ -186,7 +185,7 @@ export default {
       getSubText,
       handleSelect,
       ...addTreeNode,
-      ...deleteTreeNode,
+      // ...deleteTreeNode,
       ...renameTreeNode,
       ...copyTreeNode,
       ...moveTreeNode,

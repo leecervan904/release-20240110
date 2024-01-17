@@ -1,38 +1,22 @@
 import { ref } from "vue";
 import { Message } from "view-design";
 
-export function useModalForm({
-  emit,
-  initForm,
-  rulesOuter,
-  getTreeData,
-  reloadData,
-}) {
+export function useModalForm({ emit, getTreeList, reloadData }) {
   const refForm = ref(null);
   const visible = ref(false);
   const loading = ref(false);
 
-  const form = ref(initForm);
-
-  const rules = rulesOuter;
-
-  const validateForm = () => {
-    let res = false;
-    refForm.value.validate((valid) => {
-      res = valid;
-    });
-    return res;
-  };
-
   const confirm = async (callback) => {
     // 1. 校验
-    const valid = validateForm();
+    const { valid, form } = refForm.value.$refs.refSimpleForm.validate();
+    console.log("校验结果：", valid, { ...form });
+    // return;
 
     // 2. 调接口
     if (valid) {
       try {
         const res = await callback({
-          form: form.value,
+          form: form,
         });
 
         if (res.data.code === 200) {
@@ -40,7 +24,7 @@ export function useModalForm({
           visible.value = false;
           emit("search-table"); // 自定义事件
           if (reloadData) {
-            getTreeData();
+            getTreeList();
           }
         } else {
           Message.error(res.data.message);
@@ -53,16 +37,16 @@ export function useModalForm({
 
   const cancel = () => {
     visible.value = false;
-    form.value.resetFields();
+    // form.value.resetFields();
+    refForm.value.$refs.refSimpleForm.reset();
   };
 
   return {
     visible,
     loading,
-    form,
-    rules,
+    // form,
+    // rules,
     refForm,
-    validateForm,
     confirm,
     cancel,
   };

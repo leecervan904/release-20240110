@@ -35,7 +35,7 @@
     <div style="height: 600px">
       <DefaultLayout>
         <template #sidebar>
-          <DirectoryTree @select="handleSelectDir" />
+          <LeftTree @select="handleSelectDir" />
         </template>
 
         <template #search>
@@ -77,7 +77,7 @@
 <script>
 import BaseModal from "@/components/BaseModal";
 import SearchForm from "./components/SearchForm";
-import DirectoryTree from "./components/DirectoryTree";
+import LeftTree from "./components/LeftTree";
 import ButtonGroup from "./components/ButtonGroup";
 import CommonTable from "./components/CommonTable";
 import VersionDiff from "./components/VersionDiff";
@@ -132,7 +132,7 @@ async function mockData({ page, pageSize }) {
 export default {
   components: {
     SearchForm,
-    DirectoryTree,
+    LeftTree,
     ButtonGroup,
     CommonTable,
     VersionDiff,

@@ -10,21 +10,8 @@
     <div class="directory-tree__wrapper">
       <div class="directory-tree__status">全部资源 ({{ 2510 }})</div>
 
-      <div class="directory-tree__search">
-        <Input v-model="search" placeholder="请输入目录名称" />
-      </div>
-
       <div class="directory-tree__tree">
-        <!-- <Tree ref="refTree" :data="data1" node-key="title" @current-change="handleCurrentChange" @on-select-change="$emit('select', $event)"></Tree> -->
-
-        <el-tree
-          ref="refTree"
-          :data="data1"
-          default-expand-all
-          node-key="title"
-          @current-change="handleCurrentChange"
-          @on-select-change="$emit('select', $event)"
-        ></el-tree>
+        <slot></slot>
       </div>
     </div>
   </div>
@@ -41,44 +28,13 @@ export default {
   data() {
     return {
       search: "",
-      data1: [
-        {
-          label: "parent 1",
-          expand: true,
-          children: [
-            {
-              label: "parent 1-1",
-              expand: true,
-              children: [
-                {
-                  label: "leaf 1-1-1",
-                },
-                {
-                  label: "leaf 1-1-2",
-                },
-              ],
-            },
-            {
-              label: "parent 1-2",
-              expand: true,
-              children: [
-                {
-                  label: "leaf 1-2-1",
-                },
-                {
-                  label: "leaf 1-2-1",
-                },
-              ],
-            },
-          ],
-        },
-      ],
+      data1: [],
     };
   },
   mounted() {
     setTimeout(() => {
       console.log(this.$refs);
-      this.$refs.refTree.setCurrentKey("parent 1");
+      // this.$refs.refTree.setCurrentKey("parent 1");
     }, 1000);
   },
   methods: {

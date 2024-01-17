@@ -27,10 +27,14 @@ function registerTreeController(app, prisma) {
             children: true,
           }
         }
-      }
+      },
     })
 
-    res.json(buildTree(data))
+    res.json({
+      code: 200,
+      msg: 'success',
+      data: buildTree(data),
+    })
   })
 
   router.get('/tree/init', async (req, res) => {
@@ -47,7 +51,7 @@ function registerTreeController(app, prisma) {
     const { title, content, parentId } = req.body
 
     const data = await prisma.tree.create({
-      data: { title, content, parentId }
+      data: { title, content, parentId: parentId != null ? +parentId : null }
     })
 
     res.json({
@@ -72,11 +76,15 @@ function registerTreeController(app, prisma) {
   })
 
   router.post('/tree/node/update', async (req, res) => {
-    const { id, title, content, parentId } = req.body
+    const { id, ...rest } = req.body
+
+    if (rest.parentId != null) {
+      rest.parentId = +rest.parentId
+    }
 
     const data = await prisma.tree.update({
-      where: { id },
-      data: { title, content, parentId }
+      where: { id: +id },
+      data: rest,
     })
 
     res.json({

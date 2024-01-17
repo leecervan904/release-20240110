@@ -1,3 +1,6 @@
+import { watch } from "vue";
+import { Modal, Message } from "view-design";
+
 import { useModalForm } from "./useModalForm";
 import {
   addTreeData,
@@ -8,187 +11,208 @@ import {
 } from "@/api";
 
 export function useAddTreeNode({ emit, currentNode, getTreeList }) {
-  const { refForm, visible, loading, form, rules, confirm, cancel } =
-    useModalForm({
-      emit,
-      reloadData: true,
-      getTreeList,
-      initForm: {
-        name: "",
-      },
-      rules: {
-        name: {
-          required: true,
-          message: "请输入目录名称",
-          trigger: "blur,change",
+  const formConfig = [
+    {
+      prop: "name",
+      label: "目录名称",
+      rules: [{ required: true, message: "请输入目录名称", trigger: "blur" }],
+      component: {
+        name: "Input",
+        initialValue: "",
+        props: {
+          placeholder: "请输入目录名称",
         },
       },
-    });
+    },
+  ];
 
-  const handleConfirm = async () => {
-    confirm(() => {
-      return addTreeData({
-        moduleId: 7,
-        name: form.value.name,
-        parentId: currentNode.value.data.id || "0",
-        createTenancyId: localStorage.tenancyId,
-        test1: localStorage.projectId ? Number(localStorage.projectId) : 222,
-      });
-    });
-  };
-
-  return {
-    refAddForm: refForm,
-    addVisible: visible,
-    addLoading: loading,
-    addForm: form,
-    addRules: rules,
-    addConfirm: handleConfirm,
-    addCancel: cancel,
-  };
-}
-
-export function useDeleteTreeNode({ emit, getTreeList, tempNode }) {
-  const { visible, loading, confirm, cancel } = useModalForm({
+  const { refForm, visible, loading, confirm, cancel } = useModalForm({
     emit,
     reloadData: true,
     getTreeList,
   });
 
   const handleConfirm = async () => {
-    confirm(() => {
-      return deleteTreeData({
-        catelogId: tempNode.value.data.id,
+    confirm(({ form }) => {
+      return addTreeData({
+        parentId: currentNode.value.data.id,
+        title: form.name,
       });
     });
   };
 
   return {
-    deleteVisible: visible,
-    deleteLoading: loading,
-    deleteConfirm: handleConfirm,
-    deleteCancel: cancel,
+    addFormConfig: formConfig,
+    refAddForm: refForm,
+    addVisible: visible,
+    addLoading: loading,
+    addConfirm: handleConfirm,
+    addCancel: cancel,
+  };
+}
+
+export function useDeleteTreeNode({ emit, getTreeList, tempNode }) {
+  const confirm = async () => {
+    try {
+      const res = await deleteTreeData({
+        id: tempNode.value.data.id,
+      });
+      if (res.data.code === 200) {
+        Message.success("新增成功！");
+        getTreeList();
+        emit("search");
+      } else {
+        Message.success(res.data.message);
+      }
+    } catch (error) {
+      Message.success(error.message);
+    }
+  };
+
+  const cancel = () => {
+    //
+  };
+
+  const showModal = () => {
+    Modal.confirm({
+      title: "删除目录",
+      content: `确认删除目录：${tempNode.value.data.title}`,
+      onOk: confirm,
+      onCancel: cancel,
+    });
+  };
+
+  return {
+    showDeleteModal: showModal,
   };
 }
 
 export function useRenameTreeNode({ emit, getTreeList, tempNode }) {
-  const { refForm, visible, loading, form, rules, confirm, cancel } =
-    useModalForm({
-      emit,
-      reloadData: true,
-      getTreeList,
-      initForm: {
-        name: "",
-      },
-      rules: {
-        name: {
-          required: true,
-          message: "请输入新的目录名称",
-          trigger: "blur,change",
+  const formConfig = [
+    {
+      prop: "name",
+      label: "目录名称",
+      rules: [{ required: true, message: "请输入目录名称", trigger: "blur" }],
+      component: {
+        name: "Input",
+        initialValue: "",
+        props: {
+          placeholder: "请输入新的目录名称",
         },
       },
-    });
+    },
+  ];
+
+  const { refForm, visible, loading, confirm, cancel } = useModalForm({
+    emit,
+    reloadData: true,
+    getTreeList,
+  });
 
   const handleConfirm = async () => {
-    confirm(() => {
+    confirm(({ form }) => {
       return renameTreeData({
-        moduleId: 7,
-        name: form.value.name,
-        parentId: tempNode.value.data.id || "0",
-        createTenancyId: localStorage.tenancyId,
-        test1: localStorage.projectId ? Number(localStorage.projectId) : 222,
+        id: tempNode.value.data.id,
+        title: form.name,
       });
     });
   };
 
+  // 初始化
+  watch(visible, (val) => {
+    if (val) {
+      console.log(tempNode.value.data);
+      refForm.value.$refs.refSimpleForm.form.name = tempNode.value.data.title;
+    }
+  });
+
   return {
+    renameFormConfig: formConfig,
     refRenameForm: refForm,
     renameVisible: visible,
     renameLoading: loading,
-    renameForm: form,
-    renameRules: rules,
     renameConfirm: handleConfirm,
     renameCancel: cancel,
   };
 }
 
 export function useCopyTreeNode({ emit, getTreeList, tempNode }) {
-  const { refForm, visible, loading, form, rules, confirm, cancel } =
-    useModalForm({
-      emit,
-      reloadData: true,
-      getTreeList,
-      initForm: {
-        name: "",
-      },
-      rules: {
-        name: {
-          required: true,
-          message: "请输入新的目录名称",
-          trigger: "blur,change",
+  const formConfig = [
+    {
+      prop: "name",
+      label: "目录名称",
+      rules: [{ required: true, message: "请输入目录名称", trigger: "blur" }],
+      component: {
+        name: "Input",
+        initialValue: "",
+        props: {
+          placeholder: "请输入目录名称",
         },
       },
-    });
+    },
+  ];
+
+  const { refForm, visible, loading, confirm, cancel } = useModalForm({
+    emit,
+    reloadData: true,
+    getTreeList,
+  });
 
   const handleConfirm = async () => {
-    confirm(() => {
+    confirm(({ form }) => {
       return copyTreeData({
-        moduleId: 7,
-        name: form.value.name,
+        name: form.name,
         parentId: tempNode.value.data.id || "0",
-        createTenancyId: localStorage.tenancyId,
-        test1: localStorage.projectId ? Number(localStorage.projectId) : 222,
       });
     });
   };
 
   return {
+    copyFormConfig: formConfig,
     refCopyForm: refForm,
     copyVisible: visible,
     copyLoading: loading,
-    copyForm: form,
-    copyRules: rules,
     copyConfirm: handleConfirm,
     copyCancel: cancel,
   };
 }
 
 export function useMoveTreeNode({ emit, getTreeList, tempNode }) {
-  const { refForm, visible, loading, form, rules, confirm, cancel } =
-    useModalForm({
-      emit,
-      reloadData: true,
-      getTreeList,
-      initForm: {
-        name: "",
-      },
-      rules: {
-        name: {
-          required: true,
-          message: "请输入新的目录名称",
-          trigger: "blur,change",
+  const formConfig = [
+    {
+      prop: "name",
+      label: "目录名称",
+      rules: [{ required: true, message: "请输入目录名称", trigger: "blur" }],
+      component: {
+        name: "Input",
+        initialValue: "",
+        props: {
+          placeholder: "请输入目录名称",
         },
       },
-    });
+    },
+  ];
+
+  const { refForm, visible, loading, confirm, cancel } = useModalForm({
+    emit,
+    reloadData: true,
+    getTreeList,
+  });
 
   const handleConfirm = async () => {
-    confirm(() => {
+    confirm(({ form }) => {
       return moveTreeData({
-        moduleId: 7,
-        name: form.value.name,
+        name: form.name,
         parentId: tempNode.value.data.id || "0",
-        createTenancyId: localStorage.tenancyId,
-        test1: localStorage.projectId ? Number(localStorage.projectId) : 222,
       });
     });
   };
 
   return {
+    moveFormConfig: formConfig,
     refMoveForm: refForm,
     moveVisible: visible,
     moveLoading: loading,
-    moveForm: form,
-    moveRules: rules,
     moveConfirm: handleConfirm,
     moveCancel: cancel,
   };
