@@ -8,13 +8,8 @@
       v-bind="{ ...(item.labelConfig || {}) }"
     >
       <component
-        :is="getComp(item.component.name)"
-        :value="form[item.prop]"
-        @input="
-          (val) => {
-            form[item.prop] = val;
-          }
-        "
+        :is="getComp(item.component.type)"
+        :model-val="form[item.prop]"
         v-bind="{ ...(item.component.props || {}) }"
         v-on="registerEvents(item)"
       />
@@ -28,11 +23,9 @@
         :rules="rules"
         :submit="submit"
         :reset="reset"
-        :clear="clear"
       >
         <Button type="primary" @click="submit">Submit</Button>
         <Button @click="reset" style="margin-left: 8px">Reset</Button>
-        <Button @click="clear" style="margin-left: 8px">Clear</Button>
       </slot>
     </FormItem>
   </Form>
@@ -40,23 +33,31 @@
 
 <script>
 import { defineAsyncComponent } from "vue";
-import { cloneDeep, isPlainObject } from "lodash-es";
-import { Radio, Checkbox, DatePicker, TimePicker } from "view-design";
+import { cloneDeep } from "lodash-es";
 
 // 异步加载组件
 const FormItemComponents = {
   Input: defineAsyncComponent(() => import("./components/FormItemInput.vue")),
-  Radio,
+  Radio: defineAsyncComponent(() => import("./components/FormItemRadio.vue")),
   RadioGroup: defineAsyncComponent(() =>
     import("./components/FormItemRadioGroup.vue")
   ),
-  Checkbox,
+  Checkbox: defineAsyncComponent(() =>
+    import("./components/FormItemCheckbox.vue")
+  ),
   CheckboxGroup: defineAsyncComponent(() =>
     import("./components/FormItemCheckboxGroup.vue")
   ),
   Select: defineAsyncComponent(() => import("./components/FormItemSelect.vue")),
-  DatePicker,
-  TimePicker,
+  DatePicker: defineAsyncComponent(() =>
+    import("./components/FormItemDatePicker.vue")
+  ),
+  TimePicker: defineAsyncComponent(() =>
+    import("./components/FormItemTimePicker.vue")
+  ),
+  TreeSelect: defineAsyncComponent(() =>
+    import("./components/FormItemTreeSelect.vue")
+  ),
 };
 
 const allowComponents = Object.keys(FormItemComponents);
@@ -76,9 +77,11 @@ function getDefaultValue(name) {
     case "Select":
       return null;
     case "DatePicker":
-      return "";
+      return null;
     case "TimePicker":
-      return "";
+      return null;
+    case "TreeSelect":
+      return null;
     default:
       return null;
   }
@@ -122,10 +125,19 @@ export default {
       }, {});
     },
   },
-  mounted() {
-    this.form = cloneDeep(this.initialForm);
+  watch: {
+    formConfig: {
+      handler() {
+        this.form = cloneDeep(this.initialForm);
+      },
+      deep: true,
+      immediate: true,
+    },
   },
   methods: {
+    validateField(...args) {
+      this.$refs.refForm.validateField(...args);
+    },
     getComp(name) {
       if (!allowComponents.includes(name)) {
         throw new Error("不支持的表单类型");
@@ -134,33 +146,47 @@ export default {
       return FormItemComponents[name];
     },
     registerEvents(item) {
-      const events = item.component.events;
+      const { name, events = {} } = item.component;
 
-      if (!isPlainObject(events)) {
-        return {};
-      }
+      // 处理 input 复合事件
+      // 1. input 事件需要更改 v-model 的值
+      // 2. 需要手动触发一次用户自定义的 input
+      // 内置的双向数据更新事件
+      // todo：使用复合事件
+      events["update-model-val"] = (form, val, ...args) => {
+        // console.log("update-model-val trigger:", form, val, args);
+        this.form[item.prop] = val;
+      };
 
       return Object.keys(events).reduce((accu, curr) => {
-        return {
+        // iview 事件 on-xxx
+        const evts = {
           ...accu,
-          [`on-${curr}`]: ($event) => {
-            console.log("on", curr);
-            events[curr]($event, this.form);
-          },
-          "on-input": (val) => {
-            console.log(123);
-            this.form[item.prop] = val;
-            // input 事件会覆盖掉 v-model 的值，所以需要手动触发一次用户自定义的 input
-            if (events.input) {
-              events.input(val, this.form);
-            }
+          [curr]: ($event) => {
+            events[curr](this.form, $event);
           },
         };
+
+        // 单独处理非自带表单
+        // todo：优化控制方式
+        if (name === "TreeSelect") {
+          const updateHandler = events["update-model-val"];
+          evts["update-model-val"] = (val, ...args) => {
+            updateHandler(this.form, val, ...args);
+
+            if (item.rules && item.rules.length) {
+              this.validateField(item.prop);
+            }
+          };
+        }
+
+        return evts;
       }, {});
     },
     submit() {
       const valid = this.validate();
       if (valid) {
+        console.log({ ...this.form });
         this.$Message.success("Success!");
       } else {
         this.$Message.error("Fail!");
@@ -177,16 +203,6 @@ export default {
     },
     reset() {
       console.log("will reset...");
-
-      this.form = cloneDeep(this.initialForm);
-      // 没看到组件库提供的方法，手动清空错误信息
-      this.$refs.refForm.fields.forEach((el) => {
-        el.validateState = "";
-      });
-    },
-    clear() {
-      console.log("will clear...");
-
       this.$refs.refForm.resetFields();
     },
   },

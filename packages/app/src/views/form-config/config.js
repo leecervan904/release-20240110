@@ -6,7 +6,7 @@
  * labelConfig: FormItem 的更多参数配置：width 等
  * rules: 当前表单项的校验规则
  * component: 所需要渲染的表单组件
- *   - name: 组件名，目前只适配 iview
+ *   - type: 组件类型，目前只适配 iview 内置表单、TreeSelect
  *   - initialValue：表单的初始值，用于回显、重置表单
  *   - props: 组件属性，会直接传递到目标表单组件：如 iview 的各个表单控件：Input、Checkbox、Select、...
  *   - events: 组件事件，会直接传递到目标表单组件，除了能访问事件的 $event，还能访问整个响应式表单，可以在这里处理表单联动
@@ -17,15 +17,15 @@ export const formConfigDemo = [
     label: "姓名",
     rules: [{ required: true, message: "请输入姓名", trigger: "blur" }],
     component: {
-      name: "Input",
+      type: "Input",
       initialValue: "法外狂徒 - 张三",
       props: {
         placeholder: "请输入姓名",
       },
       events: {
-        change: (value, form) => {
-          console.log(value, { ...form });
-        },
+        // "on-change": (form, value) => {
+        //   console.log({ ...form }, value);
+        // },
       },
     },
   },
@@ -33,7 +33,7 @@ export const formConfigDemo = [
     prop: "unknown",
     label: "无知按钮",
     component: {
-      name: "Radio",
+      type: "Radio",
       initialValue: false,
     },
   },
@@ -42,7 +42,7 @@ export const formConfigDemo = [
     label: "性别（联动）",
     rules: [{ required: true, message: "请选择性别", trigger: "blur" }],
     component: {
-      name: "RadioGroup",
+      type: "RadioGroup",
       props: {
         options: [
           { label: "男", value: "male" },
@@ -50,7 +50,7 @@ export const formConfigDemo = [
         ],
       },
       events: {
-        change: (value, form) => {
+        "on-change": (form, value) => {
           // 处理联动
           if (value === "男") {
             form.desc = `我是男的`;
@@ -70,10 +70,10 @@ export const formConfigDemo = [
     prop: "beAPerson2",
     label: "做个人吧（联动）",
     component: {
-      name: "Checkbox",
+      type: "Checkbox",
       initialValue: true,
       events: {
-        change: (value, form) => {
+        "on-change": (form, value) => {
           if (!value) {
             form.sex = "";
             form.hobby = ["摆烂"];
@@ -105,7 +105,7 @@ export const formConfigDemo = [
       },
     ],
     component: {
-      name: "CheckboxGroup",
+      type: "CheckboxGroup",
       initialValue: ["睡觉"],
       props: {
         options: [
@@ -122,7 +122,7 @@ export const formConfigDemo = [
     label: "城市",
     rules: [{ required: true, message: "请选择所在城市", trigger: "blur" }],
     component: {
-      name: "Select",
+      type: "Select",
       props: {
         placeholder: "请选择所在城市",
         options: [
@@ -133,7 +133,7 @@ export const formConfigDemo = [
         ],
       },
       events: {
-        change: (value, form) => {
+        "on-change": (form, value) => {
           console.log(value, { ...form });
         },
       },
@@ -151,7 +151,7 @@ export const formConfigDemo = [
       },
     ],
     component: {
-      name: "DatePicker",
+      type: "DatePicker",
       props: {
         type: "date",
         placeholder: "选择日期",
@@ -170,10 +170,45 @@ export const formConfigDemo = [
       },
     ],
     component: {
-      name: "TimePicker",
+      type: "TimePicker",
       props: {
         type: "time",
         placeholder: "选择时间",
+      },
+    },
+  },
+  {
+    prop: "treeSelect",
+    label: "树形选择（异步）",
+    rules: [
+      // { required: true, message: '请选择', trigger: 'change' },
+      {
+        trigger: "blur, change",
+        validator: (rule, value, callback) => {
+          console.log("treeSelect, trigger", value);
+
+          if (value == null) {
+            callback(new Error("请选择"));
+          } else {
+            callback();
+          }
+        },
+      },
+    ],
+    component: {
+      type: "TreeSelect",
+      initialValue: 9,
+      props: {
+        noChildrenText: "无子目录",
+        noOptionsText: "暂无可选目录",
+        placeholder: "请选择目录",
+        options: [],
+        "default-expand-level": 3,
+      },
+      events: {
+        open: (form, ...args) => {
+          console.log("open tree select", { ...form }, args);
+        },
       },
     },
   },
@@ -184,7 +219,7 @@ export const formConfigDemo = [
       { required: true, message: "请输入自我介绍", trigger: "input, blur" },
     ],
     component: {
-      name: "Input",
+      type: "Input",
       props: {
         type: "textarea",
         placeholder: "请输入自我介绍",

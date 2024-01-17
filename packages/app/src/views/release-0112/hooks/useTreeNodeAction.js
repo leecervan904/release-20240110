@@ -17,7 +17,7 @@ export function useAddTreeNode({ emit, currentNode, getTreeList }) {
       label: "目录名称",
       rules: [{ required: true, message: "请输入目录名称", trigger: "blur" }],
       component: {
-        name: "Input",
+        type: "Input",
         initialValue: "",
         props: {
           placeholder: "请输入目录名称",
@@ -94,7 +94,7 @@ export function useRenameTreeNode({ emit, getTreeList, tempNode }) {
       label: "目录名称",
       rules: [{ required: true, message: "请输入目录名称", trigger: "blur" }],
       component: {
-        name: "Input",
+        type: "Input",
         initialValue: "",
         props: {
           placeholder: "请输入新的目录名称",
@@ -143,7 +143,7 @@ export function useCopyTreeNode({ emit, getTreeList, tempNode }) {
       label: "目录名称",
       rules: [{ required: true, message: "请输入目录名称", trigger: "blur" }],
       component: {
-        name: "Input",
+        type: "Input",
         initialValue: "",
         props: {
           placeholder: "请输入目录名称",
@@ -184,7 +184,7 @@ export function useMoveTreeNode({ emit, getTreeList, tempNode }) {
       label: "目录名称",
       rules: [{ required: true, message: "请输入目录名称", trigger: "blur" }],
       component: {
-        name: "Input",
+        type: "Input",
         initialValue: "",
         props: {
           placeholder: "请输入目录名称",

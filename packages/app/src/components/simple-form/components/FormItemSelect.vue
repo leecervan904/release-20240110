@@ -8,8 +8,9 @@
 
 <script>
 export default {
+  inheritAttrs: false,
   props: {
-    value: {
+    modelVal: {
       type: [String, Number, Array],
     },
     options: {
@@ -19,10 +20,10 @@ export default {
   computed: {
     val: {
       get() {
-        return this.value;
+        return this.modelVal;
       },
       set(val) {
-        this.$emit("input", val);
+        this.$emit("update-model-val", val);
       },
     },
   },

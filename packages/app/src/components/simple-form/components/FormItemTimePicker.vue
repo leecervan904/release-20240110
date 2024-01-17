@@ -1,12 +1,12 @@
 <template>
-  <Input ref="ref" v-model="val" v-bind="$attrs" v-on="$listeners" />
+  <DatePicker v-model="val" v-bind="$attrs" v-on="$listeners" />
 </template>
 
 <script>
 export default {
   inheritAttrs: false,
   props: {
-    modelVal: String,
+    modelVal: [String, Number, Boolean],
   },
   computed: {
     val: {

@@ -1,7 +1,5 @@
 <template>
-  <CheckboxGroup v-model="val" v-bind="$attrs" v-on="$listeners">
-    <Checkbox v-for="item in options" :key="item.label" :label="item.label" />
-  </CheckboxGroup>
+  <TreeSelect v-model="val" v-bind="$attrs" v-on="$listeners" />
 </template>
 
 <script>
@@ -9,11 +7,7 @@ export default {
   inheritAttrs: false,
   props: {
     modelVal: {
-      type: Array,
-    },
-    options: {
-      type: Array,
-      required: true,
+      type: [String, Number, Array],
     },
   },
   computed: {
@@ -22,9 +16,16 @@ export default {
         return this.modelVal;
       },
       set(val) {
+        console.log("update", val);
         this.$emit("update-model-val", val);
       },
     },
   },
 };
 </script>
+
+<style lang="less">
+.ivu-form-item-error .vue-treeselect__control {
+  border: 1px solid #ed4014 !important;
+}
+</style>
