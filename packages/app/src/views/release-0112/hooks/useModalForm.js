@@ -40,16 +40,16 @@ export function useModalForm({ emit, getTreeList, reloadData }) {
     }
   };
 
+  const cancel = () => {
+    visible.value = false;
+    refForm.value.reset();
+  };
+
   onMounted(() => {
     nextTick(() => {
       refForm.value = refModal.value.$refs.refSimpleForm;
     });
   });
-
-  const cancel = () => {
-    visible.value = false;
-    refForm.value.reset();
-  };
 
   return {
     visible,

@@ -146,7 +146,7 @@ export default {
       return FormItemComponents[name];
     },
     registerEvents(item) {
-      const { name, events = {} } = item.component;
+      const { type, events = {} } = item.component;
 
       // 处理 input 复合事件
       // 1. input 事件需要更改 v-model 的值
@@ -169,7 +169,7 @@ export default {
 
         // 单独处理非自带表单
         // todo：优化控制方式
-        if (name === "TreeSelect") {
+        if (type === "TreeSelect") {
           const updateHandler = events["update-model-val"];
           evts["update-model-val"] = (val, ...args) => {
             updateHandler(this.form, val, ...args);

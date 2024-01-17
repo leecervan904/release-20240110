@@ -1,5 +1,6 @@
-import { watch } from "vue";
+import { ref, watch } from "vue";
 import { Modal, Message } from "view-design";
+import { getTreeData } from "@/api";
 
 import { useModalForm } from "./useModalForm";
 import {
@@ -178,20 +179,47 @@ export function useCopyTreeNode({ emit, getTreeList, tempNode }) {
 }
 
 export function useMoveTreeNode({ emit, getTreeList, tempNode }) {
-  const formConfig = [
+  const formConfig = ref([
     {
-      prop: "name",
-      label: "目录名称",
-      rules: [{ required: true, message: "请输入目录名称", trigger: "blur" }],
+      prop: "targetId",
+      label: "选择移动的目录",
+      rules: [
+        {
+          trigger: "blur, change",
+          validator: (rule, value, callback) => {
+            console.log("treeSelect, trigger", value);
+
+            if (value == null) {
+              callback(new Error("请选择"));
+            } else {
+              callback();
+            }
+          },
+        },
+      ],
       component: {
-        type: "Input",
-        initialValue: "",
+        type: "TreeSelect",
+        initialValue: tempNode.value && tempNode.value.data.id,
         props: {
-          placeholder: "请输入目录名称",
+          noChildrenText: "无子目录",
+          noOptionsText: "暂无可选目录",
+          placeholder: "请选择目录",
+          options: [],
+          "default-expand-level": 3,
+          normalizer: (node) => {
+            if (node.children && !node.children.length) {
+              delete node.children;
+            }
+            return {
+              id: node.id,
+              label: node.title,
+              children: node.children,
+            };
+          },
         },
       },
     },
-  ];
+  ]);
 
   const { refModal, visible, loading, confirm, cancel } = useModalForm({
     emit,
@@ -202,11 +230,19 @@ export function useMoveTreeNode({ emit, getTreeList, tempNode }) {
   const handleConfirm = async () => {
     confirm(({ form }) => {
       return moveTreeData({
-        name: form.name,
-        parentId: tempNode.value.data.id || "0",
+        id: tempNode.value.data.id,
+        parentId: form.targetId,
       });
     });
   };
+
+  watch(visible, (val) => {
+    if (val) {
+      getTreeData().then((res) => {
+        formConfig.value[0].component.props.options = [res.data.data];
+      });
+    }
+  });
 
   return {
     moveFormConfig: formConfig,
