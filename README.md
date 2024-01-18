@@ -94,3 +94,12 @@ pnpm app:dev
 ```sh
 docker compose ./docker-compose/docker-compose.yml up -d
 ```
+
+
+## TODO
+
+- [ ] 后端添加用户验证 jwt
+- [ ] 完善各种部署方案部署
+  - [ ] shell 部署前端
+  - [x] docker-compose 部署后端
+  - [ ] docker-compose 一键部署前后端
