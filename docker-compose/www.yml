@@ -1,0 +1,49 @@
+version: '3'
+
+project_name: release-20240110
+
+services:
+  www:
+    # 方式1: 使用已有镜像
+    # image: www
+    # 方式2: 自行构建镜像：会缓存镜像，比 docker build 性能好
+    build:
+      context: ../ # 路径相对于当前文件所在路径，context 的结果会传递给 Dockerfile
+      dockerfile: './docker/www.Dockerfile' # 路径相对于 context 指定的路径
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db # 依赖下文的 db 服务，若 db 未启动则该服务启动失败
+    # links: # 已废弃，官方建议使用 depends_on
+    # - db # 与下文的 db 服务建立连接，后续可以通过 db 访问
+    environment:
+      # 数据库连接 URL，提供给 prisma 使用；这里连接到下文的 db 服务，注意几个值：
+      # - mysql             数据库类型
+      # - root              用户
+      # - admin12345        密码
+      # - db          域名或 ip 地址，可以为上述 links 对应的服务地址
+      # - release-20240110  需要使用的数据库名称
+      - DATABASE_URL=mysql://root:admin12345@db:3306/release-20240110
+    networks:
+      - my_network
+
+  db:
+    image: mysql:latest # 数据库类型
+    # 对外暴露 4306 端口，可以使用 NaviCat 等工具连接，上线后不应该暴露端口，而是通过 depends_on 连接
+    # ports:
+    # - "4306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: admin12345 # root 密码
+      MYSQL_DATABASE: release-20240110 # 启动时顺便创建一个数据库
+    volumes:
+      - db_mysql_data:/var/lib/mysql
+    networks:
+      - my_network
+
+# 可选：创建网络
+networks:
+  my_network:
+
+# 创建卷，持久化数据库
+volumes:
+  db_mysql_data:

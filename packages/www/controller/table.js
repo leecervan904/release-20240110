@@ -5,21 +5,10 @@ const { initTableData } = require('../db')
  * @param {import('express').Application} app
  * @param {import('@prisma/client').PrismaClient} prisma - Prisma 数据库客户端实例
  */
-function registerTreeController(app, prisma) {
+function registerTableController(app, prisma) {
   const router = express.Router()
 
-  router.get('/tree/node', async (req, res) => {
-    console.log(req.query, 'params');
-    const { id } = req.query
-
-    const data = await prisma.tree.findUnique({
-      where: { id: +id }
-    })
-
-    res.json(data)
-  })
-
-  router.get('/tree', async (req, res) => {
+  router.get('/table', async (req, res) => {
     const data = await prisma.tree.findMany({
       include: {
         children: {
@@ -33,62 +22,9 @@ function registerTreeController(app, prisma) {
     res.json(buildTree(data))
   })
 
-  router.get('/tree/init', async (req, res) => {
-    const data = await initTreeData(prisma)
-
-    res.json({
-      code: 200,
-      msg: 'success',
-      data,
-    })
-  })
-
-  router.post('/tree/node/create', async (req, res) => {
-    const { title, content, parentId } = req.body
-
-    const data = await prisma.tree.create({
-      data: { title, content, parentId }
-    })
-
-    res.json({
-      code: 200,
-      msg: 'success',
-      data,
-    })
-  })
-
-  router.post('/tree/node/delete', async (req, res) => {
-    const { id } = req.body
-
-    const data = await prisma.tree.delete({
-      where: { id }
-    })
-
-    res.json({
-      code: 200,
-      msg: 'success',
-      data,
-    })
-  })
-
-  router.post('/tree/node/update', async (req, res) => {
-    const { id, title, content, parentId } = req.body
-
-    const data = await prisma.tree.update({
-      where: { id },
-      data: { title, content, parentId }
-    })
-
-    res.json({
-      code: 200,
-      msg: 'success',
-      data,
-    })
-  })
-
   app.use('/', router)
 }
 
 module.exports = {
-  registerTreeController
+  registerTableController
 }

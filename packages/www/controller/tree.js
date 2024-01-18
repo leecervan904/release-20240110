@@ -98,5 +98,5 @@ function registerTreeController(app, prisma) {
 }
 
 module.exports = {
-  registerTreeController
+  registerTreeController,
 }

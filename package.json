@@ -6,7 +6,9 @@
   "scripts": {
     "dev:app": "pnpm --filter @release/app serve",
     "dev:www": "pnpm --filter @release/www dev",
-    "db:push": "pnpm --filter @release/www db:push"
+    "start:www": "pnpm --filter @release/www start",
+    "db:push": "pnpm --filter @release/www db:push",
+    "db:migrate": "pnpm --filter @release/www db:migrate"
   },
   "keywords": [],
   "author": "",
