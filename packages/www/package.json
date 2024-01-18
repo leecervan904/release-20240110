@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon ./index.js",
-    "start": "node ./index.js",
+    "dev": "nodemon --exec babel-node ./src/index.js",
+    "start": "babel-node ./src/index.js",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate deploy",
     "postinstall": "prisma generate"
@@ -20,6 +20,9 @@
     "prisma": "^5.8.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.7",
+    "@babel/node": "^7.22.19",
+    "@babel/preset-env": "^7.23.8",
     "nodemon": "^3.0.3"
   }
 }

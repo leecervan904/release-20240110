@@ -1,7 +1,7 @@
-const genDefaultTreeData = require('./defaultTreeData')
-const genDefaultTableData = require('./defaultTableData')
+import genDefaultTreeData from './defaultTreeData'
+import genDefaultTableData from './defaultTableData'
 
-function buildTree(nodes) {
+export function buildTree(nodes) {
   const nodeMap = new Map()
   let rootId = null
 
@@ -33,7 +33,7 @@ function buildTree(nodes) {
 /**
  * @param {import('@prisma/client').PrismaClient} prisma - Prisma 数据库客户端实例
  */
-async function initTreeData(prisma) {
+export async function initTreeData(prisma) {
   const { rootNode, subNodes, subSubNodes } = genDefaultTreeData()
 
   console.log('create: ', subNodes.length);
@@ -75,12 +75,6 @@ async function initTreeData(prisma) {
 /**
  * @param {import('@prisma/client').PrismaClient} prisma - Prisma 数据库客户端实例
  */
-async function initTableData(prisma) {
+export async function initTableData(prisma) {
 
-}
-
-module.exports = {
-  buildTree,
-  initTreeData,
-  initTableData,
 }

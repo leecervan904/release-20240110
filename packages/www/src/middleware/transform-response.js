@@ -3,11 +3,9 @@
  * @param {import('express').Response} res
  * @param {import('express').NextFunction} next
  */
-function transformResponse(req, res, next) {
+export default function transformResponse(req, res, next) {
   // transform response data
 
 
   next()
 }
-
-module.exports = transformResponse

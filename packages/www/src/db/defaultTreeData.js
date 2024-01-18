@@ -1,6 +1,6 @@
-const Mock = require('mockjs')
+import Mock from 'mockjs'
 
-module.exports = function genMockData() {
+export default function genMockData() {
   // mock root node
   const rootNode = {
     title: 'root node',

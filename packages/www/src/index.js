@@ -1,9 +1,9 @@
-const express = require('express');
-const bodyParser = require('body-parser')
-const { PrismaClient } = require('@prisma/client');
+import express from 'express'
+import bodyParser from 'body-parser'
+import { PrismaClient } from '@prisma/client'
 
-const { registerTreeController } = require('./controller/tree')
-const { registerTableController } = require('./controller/table')
+import { registerTreeController } from './controller/tree'
+import { registerTableController } from './controller/table'
 
 const prisma = new PrismaClient();
 const app = express();
@@ -27,7 +27,7 @@ app.use(bodyParser.json())
 app.get('/', async (req, res) => {
   res.json({
     code: 200,
-    msg: 'hello world',
+    msg: 'hello world~',
   })
 });
 
