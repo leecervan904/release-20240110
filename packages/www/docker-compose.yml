@@ -1,17 +1,30 @@
 version: '3'
 
 services:
-  web:
+  www:
     build: .
     ports:
       - "3000:3000"
     depends_on:
-      - database
-
-  database:
-    image: mysql:latest
+      - db_mysql # 依赖下文的 db_mysql 服务，若 db_mysql 未启动则该服务启动失败
+    links:
+      - db_mysql # 与下文的 db_mysql 服务建立连接，后续可以通过 db_mysql 访问
     environment:
-      MYSQL_DATABASE: release-demo
-      MYSQL_USER: root
-      MYSQL_PASSWORD: admin12345
-      MYSQL_ROOT_PASSWORD: admin12345...
+      # 数据库连接 URL，提供给 prisma 使用；这里连接到下文的 db_mysql 服务，注意几个值：
+      # - mysql             数据库类型
+      # - root              用户
+      # - admin12345        密码
+      # - db_mysql          域名或 ip 地址，可以为上述 links 对应的服务地址
+      # - release-20240110  需要使用的数据库名称
+      - DATABASE_URL="mysql://root:admin12345@db_mysql/release-20240110"
+
+  db_mysql:
+    image: mysql:latest # 数据库类型
+    ports:
+      # 对外暴露 4306 端口，可以使用 NaviCat 等工具连接，上线后不应该暴露端口，而是通过 links 连接
+      - "4306:3306"
+    environment:
+      # MYSQL_USER: guest
+      # MYSQL_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: admin12345 # root 密码
+      MYSQL_DATABASE: release-20240110 # 启动时顺便创建一个数据库

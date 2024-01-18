@@ -1,13 +1,20 @@
-FROM node:14
+FROM node:lts-alpine
 
-WORKDIR /usr/src/app
+# 设置工作目录
+WORKDIR /app
 
-COPY package*.json ./
+# 复制 package.json 和 pnpm-lock.yaml 到工作目录
+COPY package.json ./
 
-RUN npm install
+# 安装依赖
+RUN npm config set registry https://registry.npm.taobao.org
+RUN npm install -g pnpm && pnpm install
 
+# 复制应用代码到工作目录
 COPY . .
 
-EXPOSE 3000
+# 暴露应用端口
+EXPOSE 3111
 
-CMD ["node", "index.js"]
+# 运行应用
+CMD pnpm db:push && pnpm start
