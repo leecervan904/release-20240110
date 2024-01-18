@@ -7,7 +7,7 @@ services:
     # 方式2: 自行构建镜像：会缓存镜像，比 docker build 性能好
     build:
       context: ../ # 路径相对于当前文件所在路径，context 的结果会传递给 Dockerfile
-      dockerfile: './docker/www.Dockerfile' # 路径相对于 context 指定的路径
+      dockerfile: './docker/www.dockerfile' # 路径相对于 context 指定的路径
     ports:
       - '3000:3000'
     depends_on:
