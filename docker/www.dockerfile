@@ -25,4 +25,4 @@ EXPOSE 3000
 
 # 运行应用：使用 wait-for-it.sh 保证 db 已成功启动
 # 此外 node 带 alpine 的镜像不支持 bash，因此修改为 slim
-CMD ./wait-for-it.sh db:3306 -- pnpm db:push && pnpm start:www
+CMD ./wait-for-it.sh db:3306 -- pnpm db:push && pnpm www:start

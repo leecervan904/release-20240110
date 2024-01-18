@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev:app": "pnpm --filter @release/app serve",
-    "dev:www": "pnpm --filter @release/www dev",
-    "start:www": "pnpm --filter @release/www start",
+    "app:dev": "pnpm --filter @release/app serve",
+    "app:build": "pnpm --filter @release/app build",
+    "www:dev": "pnpm --filter @release/www dev",
+    "www:start": "pnpm --filter @release/www start",
+    "www:build": "pnpm --filter @release/www build",
     "db:push": "pnpm --filter @release/www db:push",
     "db:migrate": "pnpm --filter @release/www db:migrate"
   },

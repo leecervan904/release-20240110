@@ -49,7 +49,7 @@ pnpm db:push
 
 - 启动后端服务，默认通过 3000 端口访问后端服务
 ```sh
-pnpm dev:www
+pnpm www:dev
 ```
 
 
@@ -73,7 +73,7 @@ docker compose -f ./docker-compose/www.yml up -d
 
 - 在项目根目录下，执行命令即可启动，默认端口为 8080
 ```sh
-pnpm dev:app
+pnpm app:dev
 ```
 
 
