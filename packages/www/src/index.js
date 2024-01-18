@@ -1,9 +1,13 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import { PrismaClient } from '@prisma/client'
+import { config } from 'dotenv'
 
 import { registerTreeController } from './controller/tree'
 import { registerTableController } from './controller/table'
+
+// try load .env
+config()
 
 const prisma = new PrismaClient();
 const app = express();
@@ -28,6 +32,7 @@ app.get('/', async (req, res) => {
   res.json({
     code: 200,
     msg: 'hello world~',
+    env: process.env.DATABASE_URL || 'nothing',
   })
 });
 
