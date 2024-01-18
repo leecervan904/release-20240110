@@ -1,7 +1,5 @@
 version: '3'
 
-project_name: release-20240110
-
 services:
   www:
     # 方式1: 使用已有镜像
