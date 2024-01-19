@@ -15,6 +15,11 @@ const routes = [
     component: () => import("../views/release-0112-jsx/index.vue"),
   },
   {
+    path: "/tree-jsx-hoc",
+    name: "tree-jsx-hoc",
+    component: () => import("../views/release-0112-jsx-hoc/index.vue"),
+  },
+  {
     path: "/about",
     name: "About",
     component: () =>

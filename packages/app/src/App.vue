@@ -3,6 +3,7 @@
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/tree-jsx">tree jsx</router-link> |
+      <router-link to="/tree-jsx-hoc">tree jsx hoc</router-link> |
       <router-link to="/about">About</router-link>
     </div>
     <router-view />
