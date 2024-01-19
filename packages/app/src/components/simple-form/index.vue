@@ -135,6 +135,11 @@ export default {
     },
   },
   methods: {
+    setFieldValue(field, val) {
+      if (this.form[field] != undefined) {
+        this.form[field] = val;
+      }
+    },
     validateField(...args) {
       this.$refs.refForm.validateField(...args);
     },

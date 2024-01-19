@@ -7,8 +7,12 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/release-0112/index.vue"),
+    component: () => import("../views/release-0112/index.vue"),
+  },
+  {
+    path: "/tree-jsx",
+    name: "tree-jsx",
+    component: () => import("../views/release-0112-jsx/index.vue"),
   },
   {
     path: "/about",
