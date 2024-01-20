@@ -30,8 +30,10 @@ export function useModalFormAdd() {
         },
       },
     ],
-    title: "目录名称",
-    confirm: async () => {
+    modalAttrs: {
+      title: "目录名称",
+    },
+    onConfirm: async () => {
       return getData();
     },
   });
@@ -58,8 +60,10 @@ export function useModalFormRename() {
         },
       },
     ],
-    title: "重命名",
-    confirm: async () => {
+    modalAttrs: {
+      title: "重命名",
+    },
+    onConfirm: async () => {
       return getData();
     },
   });

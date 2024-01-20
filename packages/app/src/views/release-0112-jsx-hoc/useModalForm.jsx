@@ -5,29 +5,27 @@ import {
   onMounted,
   nextTick,
   getCurrentInstance,
-  provide,
-  inject,
 } from "vue";
 import { Message } from "view-design";
+import VueTypes from "vue-types";
+import { omit } from "lodash-es";
 
 import BaseModal from "@/components/BaseModal";
 import SimpleForm from "@/components/simple-form";
 
-const INJECT_FORM_KEY = Symbol("refForm");
+const noop = () => {};
 
-function withModal(Comp) {
+function withModal(Comp, { refForm }) {
   const WrapperModal = defineComponent({
     name: "WrapperModal",
     props: {
-      value: Boolean,
-      title: String,
-      confirm: Function,
-      cancel: Function,
+      showModal: VueTypes.bool.def(false),
+      confirmModal: VueTypes.func.def(noop),
+      cancelModal: VueTypes.func.def(noop),
+      modalAttrs: VueTypes.object.def({}),
     },
     setup(props, { attrs, listeners, emit }) {
       const { proxy: inst } = getCurrentInstance();
-
-      const refForm = inject(INJECT_FORM_KEY);
 
       onMounted(() => {
         nextTick(() => {
@@ -37,14 +35,21 @@ function withModal(Comp) {
 
       const show = computed({
         get() {
-          return props.value;
+          return props.showModal;
         },
         set(val) {
-          emit("input", val);
+          emit("update:showModal", val);
         },
       });
 
-      const confirm = async () => {
+      const defaultModalAttrs = {
+        title: "标题",
+        width: 800,
+        "max-height": 800,
+        "mask-closable": false,
+      };
+
+      const onConfirm = async () => {
         const { refForm } = inst.$refs;
         const { valid, form } = refForm.validate();
 
@@ -54,7 +59,7 @@ function withModal(Comp) {
         }
 
         try {
-          const res = await props.confirm({ form });
+          const res = await props.confirmModal({ form });
 
           if (res.code === 200) {
             Message.success(res.message);
@@ -71,24 +76,29 @@ function withModal(Comp) {
         }
       };
 
-      const cancel = () => {
-        // emit("cancel");
-        show.value = false;
+      const onCancel = async () => {
+        try {
+          await props.cancelModal();
+          show.value = false;
+        } catch (error) {
+          Message.error(error.message);
+        }
       };
 
       return () => (
         <BaseModal
           title={props.title || "no title"}
+          {...{ ...defaultModalAttrs, ...props.modalAttrs }}
           value={show.value}
           onInput={(val) => (show.value = val)}
           scopedSlots={{
             footer: () => (
-              <div slot="footer" style="text-align: center">
-                <Button onClick={cancel}>取消1</Button>
+              <div style="text-align: center">
+                <Button onClick={onCancel}>取消1</Button>
                 <Button
                   type="primary"
                   style="margin-left: 20px"
-                  onClick={confirm}
+                  onClick={onConfirm}
                 >
                   确定1
                 </Button>
@@ -100,7 +110,7 @@ function withModal(Comp) {
             ref="refForm"
             {...{
               attrs,
-              on: listeners,
+              on: omit(listeners, "update:showModal"),
             }}
           />
         </BaseModal>
@@ -111,29 +121,27 @@ function withModal(Comp) {
   return WrapperModal;
 }
 
-const noop = () => {};
-
 export function useModalForm({
   formConfig,
-  confirm = noop,
-  cancel = noop,
-  title,
+  modalAttrs,
+  onConfirm = noop,
+  onCancel = noop,
 }) {
   const visible = ref(false);
   const refForm = ref(null);
 
-  provide(INJECT_FORM_KEY, refForm);
-
-  const WrapperModal = withModal(SimpleForm);
+  const WrapperModal = withModal(SimpleForm, { refForm });
 
   const ModalForm = () => (
     <WrapperModal
-      value={visible.value}
-      onInput={(val) => (visible.value = val)}
+      showModal={visible.value}
+      on={{
+        "update:showModal": (val) => (visible.value = val),
+      }}
       form-config={formConfig}
-      title={title}
-      confirm={confirm}
-      cancel={cancel}
+      modalAttrs={modalAttrs}
+      confirmModal={onConfirm}
+      cancelModal={onCancel}
     />
   );
 

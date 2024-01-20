@@ -35,6 +35,7 @@ importers:
       vue: ^2.6.11
       vue-router: ^3.2.0
       vue-template-compiler: ^2.6.11
+      vue-types: ^5.1.1
     dependencies:
       '@riophae/vue-treeselect': registry.npmmirror.com/@riophae/vue-treeselect/0.4.0_vue@2.7.16
       axios: registry.npmmirror.com/axios/1.6.5
@@ -59,6 +60,7 @@ importers:
       less-loader: registry.npmmirror.com/less-loader/5.0.0_less@3.13.1
       prettier: registry.npmmirror.com/prettier/2.8.8
       vue-template-compiler: registry.npmmirror.com/vue-template-compiler/2.7.16
+      vue-types: registry.npmmirror.com/vue-types/5.1.1_vue@2.7.16
 
   packages/www:
     specifiers:
@@ -13135,6 +13137,22 @@ packages:
     resolution: {integrity: sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz}
     name: vue-template-es2015-compiler
     version: 1.9.1
+    dev: true
+
+  registry.npmmirror.com/vue-types/5.1.1_vue@2.7.16:
+    resolution: {integrity: sha512-FMY/JCLWePXgGIcMDqYdJsQm1G0CDxEjq6W0+tZMJZlX37q/61eSGSIa/XFRwa9T7kkKXuxxl94/2kgxyWQqKw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-types/-/vue-types-5.1.1.tgz}
+    id: registry.npmmirror.com/vue-types/5.1.1
+    name: vue-types
+    version: 5.1.1
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      vue: ^2.0.0 || ^3.0.0
+    peerDependenciesMeta:
+      vue:
+        optional: true
+    dependencies:
+      is-plain-object: registry.npmmirror.com/is-plain-object/5.0.0
+      vue: registry.npmmirror.com/vue/2.7.16
     dev: true
 
   registry.npmmirror.com/vue/2.7.16:
